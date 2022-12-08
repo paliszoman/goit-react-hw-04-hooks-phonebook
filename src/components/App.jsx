@@ -1,101 +1,83 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Form } from './Form/Form.jsx';
 import { Filter } from './Filter/Filter.jsx';
 import { ContactList } from './ContactList/ContactList.jsx';
 
-export class App extends Component {
-  static defaultProps = {
-    contacts: [],
-    filter: '',
-  };
+export const App = () => {
+  let contactsArray = [
+    { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+    { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+    { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+    { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+  ];
 
-  constructor(props) {
-    super(props);
-    this.searchForContacts = this.searchForContacts.bind(this);
-    this.searchForExistingContacts = this.searchForExistingContacts.bind(this);
-    this.deleteContacts = this.deleteContacts.bind(this);
-  }
+  let [contacts, setContacts] = useState([]);
+  let [filterMe, setFilter] = useState('');
 
-  componentDidMount() {
-    if (this.state.contacts.length <= 0) {
-      this.setState({
-        contacts: JSON.parse(localStorage.getItem('phonebook')),
-      });
+  useEffect(() => {
+    if (contacts.length <= 0) {
+      setContacts(
+        (contacts =
+          JSON.parse(localStorage.getItem('phonebook')) || contactsArray)
+      );
     }
-  }
+  }, []);
 
-  componentDidUpdate() {
-    if (this.state !== localStorage.getItem('phonebook')) {
-      localStorage.setItem('phonebook', JSON.stringify(this.state.contacts));
+  useEffect(() => {
+    if (contacts !== localStorage.getItem('phonebook')) {
+      localStorage.setItem('phonebook', JSON.stringify(contacts));
     }
-  }
+  }, [contacts]);
 
   //function for searching contacts by single letter
-  searchForContacts(search) {
-    const contacts = this.state.contacts;
-    const filter = search.contact.toLowerCase();
+  const searchForContacts = searchFromFilter => {
+    const filter = searchFromFilter.toLowerCase();
     let filterArray = [];
     contacts.map(contact => {
       const hasName = contact.name.toLowerCase().includes(filter);
       if (hasName) {
         filterArray.push(contact);
       }
-      return this.setState({ filter: filterArray });
+      return setFilter((filterMe = filterArray));
     });
-  }
+  };
 
-  //function looking for contact if exist make alert
-  searchForExistingContacts(contactFromForm) {
-    const contacts = this.state.contacts;
-    const filter = contactFromForm.name.toLowerCase();
+  //function to add contact
+  const addContact = contactFormForm => {
+    const filter = contactFormForm.name.toLowerCase();
     let contactsArray = contacts.find(
       contact => contact.name.toLocaleLowerCase() === filter
     );
-
+    // alert if contact is already added
     return contactsArray === undefined
-      ? this.setState({ contacts: [...this.state.contacts, contactFromForm] })
+      ? setContacts(contacts => [...contacts, contactFormForm])
       : alert('We have contact like this!');
-  }
+  };
 
   //function that delete object with name from state
-
-  deleteContacts(deleteContact) {
-    const contacts = this.state.contacts;
+  const deleteContacts = deleteContact => {
     let contactsArray = [...contacts];
     let searchedContact = contacts.findIndex(
       contact => contact.name === deleteContact
     );
     contactsArray.splice(searchedContact, 1);
-    return this.setState({ contacts: contactsArray });
-  }
-
-  state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
-    filter: [],
+    return setContacts((contacts = contactsArray));
   };
 
-  render() {
-    return (
-      <>
-        <h1>Phonebook</h1>
-        <Form onSubmit={value => this.searchForExistingContacts(value)}></Form>
-        <h2>Contacts</h2>
-        <Filter onChange={search => this.searchForContacts(search)}></Filter>
-        <ContactList
-          contacts={
-            this.state.filter[0] == null
-              ? this.state.contacts
-              : this.state.filter
-          }
-          deleteMe={this.deleteContacts}
-        />
-      </>
-    );
-  }
-}
+  return (
+    <>
+      {console.log(localStorage.getItem('phonebook'))}
+      <h1>Phonebook</h1>
+      <Form onSubmit={contactFormForm => addContact(contactFormForm)}></Form>
+      <h2>Contacts</h2>
+      <Filter
+        onChange={searchFromFilter => searchForContacts(searchFromFilter)}
+      ></Filter>
+      <ContactList
+        contacts={filterMe === '' ? contacts : filterMe}
+        deleteMe={deleteContacts}
+      />
+    </>
+  );
+};
