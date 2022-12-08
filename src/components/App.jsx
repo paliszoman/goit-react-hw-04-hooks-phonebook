@@ -67,7 +67,6 @@ export const App = () => {
 
   return (
     <>
-      {console.log(localStorage.getItem('phonebook'))}
       <h1>Phonebook</h1>
       <Form onSubmit={contactFormForm => addContact(contactFormForm)}></Form>
       <h2>Contacts</h2>
