@@ -15,9 +15,9 @@ export const App = () => {
   let [filterMe, setFilter] = useState('');
 
   useEffect(() => {
-    let contacts = JSON.parse(localStorage.getItem('phonebook'));
     if (contacts.length <= 0) {
-      setContacts(contacts);
+      // eslint-disable-next-line
+      setContacts((contacts = JSON.parse(localStorage.getItem('phonebook'))));
     }
   }, []);
 
