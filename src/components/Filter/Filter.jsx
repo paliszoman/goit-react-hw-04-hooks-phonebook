@@ -27,3 +27,8 @@ export const Filter = props => {
     </form>
   );
 };
+
+Filter.propTypes = {
+  formSubmit: PropTypes.func,
+  searchFromFilter: PropTypes.string,
+};

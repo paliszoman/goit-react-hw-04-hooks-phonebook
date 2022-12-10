@@ -7,6 +7,7 @@ export const Form = props => {
   let [name, setName] = useState('');
   let [number, setNumber] = useState('');
   let [id, setId] = useState('');
+
   const formSubmit = e => {
     e.preventDefault();
     const form = e.currentTarget.elements;
@@ -46,4 +47,9 @@ export const Form = props => {
       </button>
     </form>
   );
+};
+
+Form.propTypes = {
+  formSubmit: PropTypes.func,
+  props: PropTypes.objectOf(PropTypes.string),
 };
