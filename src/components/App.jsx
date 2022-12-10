@@ -28,7 +28,7 @@ export const App = () => {
     if (contacts !== localStorage.getItem('phonebook')) {
       localStorage.setItem('phonebook', JSON.stringify(contacts));
     }
-  }, [contacts]);
+  });
 
   //function for searching contacts by single letter
   const searchForContacts = searchFromFilter => {
