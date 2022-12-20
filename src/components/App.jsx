@@ -54,12 +54,8 @@ export const App = () => {
 
   //function that delete object with name from state
   const deleteContacts = deleteContact => {
-    let contactsArray = [...contacts];
-    let searchedContact = contacts.findIndex(
-      contact => contact.name === deleteContact
-    );
-    contactsArray.splice(searchedContact, 1);
-    return setContacts((contacts = contactsArray)), window.location.reload();
+    let filtered = contacts.filter(item => item.name !== deleteContact);
+    setContacts((contacts = filtered));
   };
 
   return (
