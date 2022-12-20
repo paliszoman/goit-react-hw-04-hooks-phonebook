@@ -59,7 +59,7 @@ export const App = () => {
       contact => contact.name === deleteContact
     );
     contactsArray.splice(searchedContact, 1);
-    return setContacts((contacts = contactsArray));
+    return setContacts((contacts = contactsArray)), window.location.reload();
   };
 
   return (
